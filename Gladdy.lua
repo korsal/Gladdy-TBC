@@ -1,3 +1,19 @@
+-- MoP Classic: FontString:SetFont rejects invalid flag args (boolean false, "NONE", etc.).
+-- Gladdy stores outlines as "NONE"/booleans, so sanitize the 3rd arg to "" (= no flags).
+do
+    local fsMeta = getmetatable(UIParent:CreateFontString(nil, "BACKGROUND"))
+    if fsMeta and fsMeta.__index and not fsMeta.__index.__gladdySetFontPatched then
+        local origSetFont = fsMeta.__index.SetFont
+        fsMeta.__index.SetFont = function(self, font, height, flags, ...)
+            if flags == "NONE" or (flags ~= nil and type(flags) ~= "string") then
+                flags = ""
+            end
+            return origSetFont(self, font, height, flags, ...)
+        end
+        fsMeta.__index.__gladdySetFontPatched = true
+    end
+end
+
 local setmetatable = setmetatable
 local type = type
 local tostring = tostring
@@ -29,11 +45,11 @@ local GetSpellInfo = GetSpellInfo
 
 ---------------------------
 
-local MAJOR, MINOR = "Gladdy", 33
+local MAJOR, MINOR = "Gladdy", 34
 local Gladdy = LibStub:NewLibrary(MAJOR, MINOR)
 local L
 Gladdy.version_major_num = 2
-Gladdy.version_minor_num = .71
+Gladdy.version_minor_num = .72
 Gladdy.version_num = Gladdy.version_major_num + Gladdy.version_minor_num
 Gladdy.version_releaseType = RELEASE_TYPES.release
 Gladdy.version = PREFIX .. string.format("%.2f", Gladdy.version_num) .. "-" .. Gladdy.version_releaseType

@@ -7,7 +7,8 @@ local UnitChannelInfo = UnitChannelInfo
 local UnitCastingInfo = UnitCastingInfo
 local GetTime = GetTime
 local GetBuildInfo = GetBuildInfo
-local CASTING_BAR_ALPHA_STEP = CASTING_BAR_ALPHA_STEP
+-- MoP Classic: CASTING_BAR_ALPHA_STEP global was removed; fall back to Blizzard's original value.
+local CASTING_BAR_ALPHA_STEP = CASTING_BAR_ALPHA_STEP or 0.05
 local BackdropTemplateMixin = BackdropTemplateMixin
 
 ---------------------------
